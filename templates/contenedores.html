@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Contenedores - SisResiduos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span>Contenedores</span>
+      <div>
+        <a href="#" class="btn btn-sm btn-primary">Exportar CSV</a>
+        <a href="#" class="btn btn-sm btn-success">Agregar contenedor</a>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <table id="tblContenedores" class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Capacidad (kg)</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Prom. Llenado (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in contenedores %}
+            <tr>
+              <td>{{ c.id }}</td>
+              <td>{{ c.tipo }}</td>
+              <td>{{ c.capacidad }}</td>
+              <td>{{ c.ubicacion }}</td>
+              <td>{{ c.estado }}</td>
+              <td>{{ c.promedio_ll }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function() {
+    $('#tblContenedores').DataTable({
+      pageLength: 25,
+      order: [[5, 'desc']]
+    });
+  });
+</script>
+{% endblock %}

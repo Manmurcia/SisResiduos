@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Sensores - SisResiduos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+      <span>Sensores</span>
+      <a href="#" class="btn btn-sm btn-primary">Agregar sensor</a>
+    </div>
+    <div class="card-body">
+      <table id="tblSensores" class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Modelo</th>
+            <th>Contenedor</th>
+            <th>Estado</th>
+            <th>Fecha Instalación</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in sensores %}
+            <tr>
+              <td>{{ s.id }}</td>
+              <td>{{ s.tipo }}</td>
+              <td>{{ s.modelo }}</td>
+              <td>{{ s.contenedor }}</td>
+              <td>{{ s.estado }}</td>
+              <td>{{ s.fecha_instalacion }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function() {
+    $('#tblSensores').DataTable({ pageLength: 25 });
+  });
+</script>
+{% endblock %}

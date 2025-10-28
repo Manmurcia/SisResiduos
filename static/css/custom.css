@@ -1,0 +1,14 @@
+/* Estilos personalizados */
+#map { 
+    min-height: 400px;
+    width: 100%;
+    border-radius: 0.25rem;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.navbar {
+    margin-bottom: 2rem;
+}

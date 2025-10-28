@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Mediciones - SisResiduos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      Mediciones
+      <div class="float-end">
+        <form id="filterForm" class="d-flex">
+          <input class="form-control form-control-sm me-2" name="desde" type="date">
+          <input class="form-control form-control-sm me-2" name="hasta" type="date">
+          <select class="form-select form-select-sm me-2" name="idContenedor">
+            <option value="">Todas ubicaciones</option>
+            {% for u in ubicaciones %}
+              <option value="{{ u.id }}">{{ u.nombre }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-sm btn-outline-primary" type="submit">Filtrar</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <table id="tblMediciones" class="table table-sm table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Sensor</th>
+            <th>FechaHora</th>
+            <th>% Llenado</th>
+            <th>Peso (kg)</th>
+            <th>Temp (°C)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in mediciones %}
+            <tr>
+              <td>{{ m.id }}</td>
+              <td>{{ m.sensor }}</td>
+              <td>{{ m.fecha_hora }}</td>
+              <td>{{ m.porcentaje }}</td>
+              <td>{{ m.peso }}</td>
+              <td>{{ m.temp }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function() {
+    $('#tblMediciones').DataTable({
+      pageLength: 25,
+      order: [[2, 'desc']]
+    });
+
+    // Filtrado simple: submit form to server (Flask route should handle query params)
+    $('#filterForm').on('submit', function(e){
+      e.preventDefault();
+      const q = $(this).serialize();
+      window.location = '{{ url_for("mediciones") }}?' + q;
+    });
+  });
+</script>
+{% endblock %}
