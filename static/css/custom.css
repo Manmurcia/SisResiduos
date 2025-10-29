@@ -1,14 +1,100 @@
-/* Estilos personalizados */
-#map { 
-    min-height: 400px;
-    width: 100%;
-    border-radius: 0.25rem;
+/* =======================================
+   CUSTOM.CSS - Estilo moderno ecológico
+   ======================================= */
+
+/* --- Colores base --- */
+:root {
+  --verde-principal: #00a86b;
+  --verde-suave: #b7e4c7;
+  --gris-fondo: #f7f9f9;
+  --gris-texto: #444;
+  --blanco: #fff;
 }
 
-.card {
-    margin-bottom: 1rem;
+/* --- Efecto de aparición suave --- */
+body.fade-in {
+  animation: fadeIn 0.6s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- General --- */
+body {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background-color: var(--gris-fondo);
+  color: var(--gris-texto);
+}
+
+a {
+  text-decoration: none;
+  color: var(--verde-principal);
+}
+a:hover {
+  color: #008a5a;
+}
+
+/* --- Navbar --- */
 .navbar {
-    margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: var(--verde-principal) !important;
+}
+.navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.navbar .nav-link.active {
+  font-weight: bold;
+  color: #fff !important;
+  text-decoration: underline;
+}
+
+/* --- Tarjetas (cards) --- */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card.hover-card {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+.card-header {
+  background-color: var(--verde-suave);
+  font-weight: 500;
+  color: var(--gris-texto);
+}
+
+/* --- Botones personalizados --- */
+.btn-primary, .btn-success {
+  border-radius: 8px;
+  background-color: var(--verde-principal);
+  border: none;
+}
+.btn-primary:hover, .btn-success:hover {
+  background-color: #008a5a;
+}
+
+/* --- Tablas --- */
+.table {
+  font-size: 0.92rem;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.table thead {
+  background-color: var(--verde-principal);
+  color: #fff;
+}
+.table-hover tbody tr:hover {
+  background-color: #e9f9f1;
+}
+
+/* --- Footer --- */
+footer {
+  background-color: #e8f5ee;
+  color: #555;
+  font-size: 0.9rem;
+  border-top: 1px solid #d3e4d1;
 }

@@ -11,10 +11,15 @@ print("🔍 Base de datos:", os.getenv("SQL_DATABASE"))
 
 
 @app.route("/")
+@app.route("/dashboard")
 def dashboard():
     # obtener datos desde db
     kpi = {'containers_active':120, 'critical_alerts':3, 'avg_fill':47.5, 'measurements_today': 2450}
-    containers = []  # lista con lat,lng,id,tipo
+    containers = [
+        {'lat': 4.6097, 'lng': -74.0817, 'id': 1, 'tipo': 'Orgánico'},
+        {'lat': 4.6157, 'lng': -74.0697, 'id': 2, 'tipo': 'Plástico'},
+        {'lat': 4.6037, 'lng': -74.0757, 'id': 3, 'tipo': 'Vidrio'}
+    ]
     chart = {
         'fill': {'labels': ['Org','Plast','Vidrio'], 'data':[45,50,30]},
         'temp': {
@@ -22,7 +27,23 @@ def dashboard():
             'data': [22,22,21,20,19,18,17,16,17,19,21,23,24,25,26,25,24,23,22,21,20,19,18,17]
         }
     }
-    return render_template('dashboard.html', kpi=kpi, containers=containers, chart=chart)
+    return render_template('dashboard.html', 
+                         kpi=kpi, 
+                         containers=containers, 
+                         chart=chart,
+                         current_year=datetime.now().year)
+
+@app.route("/contenedores")
+def contenedores():
+    return render_template('contenedores.html', current_year=datetime.now().year)
+
+@app.route("/sensores")
+def sensores():
+    return render_template('sensores.html', current_year=datetime.now().year)
+
+@app.route("/mediciones")
+def mediciones():
+    return render_template('mediciones.html', current_year=datetime.now().year)
 
 # Construcción dinámica de la cadena de conexión
 if os.getenv("SQL_TRUSTED_CONNECTION") == "yes":
