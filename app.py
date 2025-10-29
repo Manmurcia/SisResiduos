@@ -11,6 +11,9 @@ print("🔍 Base de datos:", os.getenv("SQL_DATABASE"))
 
 
 @app.route("/")
+def index():
+    return render_template('index.html')
+
 @app.route("/dashboard")
 def dashboard():
     # obtener datos desde db

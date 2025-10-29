@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}SisResiduos - Bienvenido{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <img src="{{ url_for('static', filename='img/logo-alt-primary.png') }}" 
+                 alt="SIGER Logo" 
+                 class="img-fluid mb-5" 
+                 style="max-width: 300px;">
+            
+            <h1 class="display-4 mb-4">Bienvenido a SIGER</h1>
+            <p class="lead mb-4 text-muted">
+                Sistema Inteligente de Gestión de Residuos para un Futuro más Sostenible
+            </p>
+            
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                    Ir al Dashboard
+                </a>
+                <a href="{{ url_for('contenedores') }}" class="btn btn-outline-primary btn-lg px-4">
+                    Ver Contenedores
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
