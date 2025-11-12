@@ -7,8 +7,8 @@
     <div class="card-header d-flex justify-content-between align-items-center">
       <span>Contenedores</span>
       <div>
-        <a href="#" class="btn btn-sm btn-primary">Exportar CSV</a>
-        <a href="#" class="btn btn-sm btn-success">Agregar contenedor</a>
+        <a href="/contenedores/exportar_csv" id="exportContenedoresBtn" class="btn btn-sm btn-primary">Exportar CSV</a>
+        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarContenedor">Agregar contenedor</button>
       </div>
     </div>
 
@@ -52,3 +52,46 @@
   });
 </script>
 {% endblock %}
+
+
+{# Modal: Agregar Contenedor #}
+<div class="modal fade" id="modalAgregarContenedor" tabindex="-1" aria-labelledby="modalAgregarContenedorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarContenedorLabel">Agregar contenedor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formAgregarContenedor">
+          <div class="mb-3">
+            <label class="form-label">Tipo de residuo</label>
+            <select name="tipo_residuo" class="form-select" required>
+              <option value="" selected disabled>Seleccionar...</option>
+              {% for t in tipos %}
+                <option value="{{ t.id }}">{{ t.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Capacidad (kg)</label>
+            <input type="number" name="capacidad" class="form-control" min="0" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ubicación</label>
+            <select name="ubicacion" class="form-select" required>
+              <option value="" selected disabled>Seleccionar...</option>
+              {% for u in ubicaciones %}
+                <option value="{{ u.id }}">{{ u.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="formAgregarContenedor" class="btn btn-primary">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>

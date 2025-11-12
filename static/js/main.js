@@ -70,3 +70,55 @@ $(document).ready(function() {
         });
     }
 });
+
+// --- Handlers para formularios de agregar (AJAX) ---
+document.addEventListener('DOMContentLoaded', function () {
+  // Agregar contenedor
+  const formCont = document.getElementById('formAgregarContenedor');
+  if (formCont) {
+    formCont.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(formCont);
+      try {
+        const res = await fetch('/contenedores/agregar', { method: 'POST', body: fd });
+        const json = await res.json();
+        if (res.ok) {
+          showToast(json.message || 'Contenedor agregado', 'success');
+          // Cerrar modal
+          const modalEl = document.getElementById('modalAgregarContenedor');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          modalEl && modal && modal.hide();
+          setTimeout(() => location.reload(), 600);
+        } else {
+          showToast(json.message || json.error || 'Error al agregar', 'danger');
+        }
+      } catch (err) {
+        showToast(err.message || 'Error de red', 'danger');
+      }
+    });
+  }
+
+  // Agregar sensor
+  const formSens = document.getElementById('formAgregarSensor');
+  if (formSens) {
+    formSens.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(formSens);
+      try {
+        const res = await fetch('/sensores/agregar', { method: 'POST', body: fd });
+        const json = await res.json();
+        if (res.ok) {
+          showToast(json.message || 'Sensor agregado', 'success');
+          const modalEl = document.getElementById('modalAgregarSensor');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          modalEl && modal && modal.hide();
+          setTimeout(() => location.reload(), 600);
+        } else {
+          showToast(json.message || json.error || 'Error al agregar sensor', 'danger');
+        }
+      } catch (err) {
+        showToast(err.message || 'Error de red', 'danger');
+      }
+    });
+  }
+});

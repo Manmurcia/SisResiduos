@@ -2,6 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
+  {# Favicon: use static URL so Flask lo sirve correctamente #}
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo-favicon.png') }}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/logo-icon.png') }}" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}SisResiduos - Dashboard{% endblock %}</title>
 

@@ -6,7 +6,7 @@
   <div class="card">
     <div class="card-header d-flex justify-content-between">
       <span>Sensores</span>
-      <a href="#" class="btn btn-sm btn-primary">Agregar sensor</a>
+      <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarSensor">Agregar sensor</button>
     </div>
     <div class="card-body">
       <table id="tblSensores" class="table table-bordered table-hover">
@@ -45,3 +45,46 @@
   });
 </script>
 {% endblock %}
+
+
+{# Modal: Agregar Sensor #}
+<div class="modal fade" id="modalAgregarSensor" tabindex="-1" aria-labelledby="modalAgregarSensorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarSensorLabel">Agregar sensor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formAgregarSensor">
+          <div class="mb-3">
+            <label class="form-label">Tipo de sensor</label>
+            <select name="tipo_sensor" class="form-select" required>
+              <option value="" selected disabled>Seleccionar...</option>
+              {% for t in tipos %}
+                <option value="{{ t.id }}">{{ t.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Modelo</label>
+            <input type="text" name="modelo" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contenedor</label>
+            <select name="contenedor" class="form-select" required>
+              <option value="" selected disabled>Seleccionar...</option>
+              {% for c in contenedores %}
+                <option value="{{ c.id }}">{{ c.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="formAgregarSensor" class="btn btn-primary">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
