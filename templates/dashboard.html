@@ -2,169 +2,21 @@
 {% block title %}Dashboard - SisResiduos{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-  <div class="row g-3">
-    <!-- KPIs -->
-    <div class="col-12">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="card text-white bg-success h-100">
-            <div class="card-body">
-              <h6 class="card-title text-white-50 mb-2">Contenedores activos</h6>
-              <h3 class="card-text mb-0">{{ kpi.containers_active or 0 }}</h3>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card text-white bg-danger">
-            <div class="card-body">
-              <h6 class="card-title">Alertas críticas</h6>
-              <h3 class="card-text">{{ kpi.critical_alerts or 0 }}</h3>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card text-white bg-primary">
-            <div class="card-body">
-              <h6 class="card-title">Prom. llenado (%)</h6>
-              <h3 class="card-text">{{ kpi.avg_fill or '—' }}</h3>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card text-white bg-info">
-            <div class="card-body">
-              <h6 class="card-title">Mediciones (hoy)</h6>
-              <h3 class="card-text">{{ kpi.measurements_today or 0 }}</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Map + Charts -->
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-header">Mapa de contenedores (estado)</div>
-        <div class="card-body p-0">
-          <div id="map" style="height:420px;"></div>
-        </div>
-      </div>
-    </div>
+<div class="container">
+  <h2>Dashboard de Gestión de Residuos</h2>
 
-    <div class="col-lg-6">
-      <div class="card mb-3">
-        <div class="card-header">Promedio de llenado por tipo de residuo</div>
-        <div class="card-body">
-          <canvas id="chartFillByType" height="200"></canvas>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">Temperatura promedio por hora</div>
-        <div class="card-body">
-          <canvas id="chartTempByHour" height="150"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
+  <iframe 
+    title="Siger" 
+    src="https://app.powerbi.com/view?r=eyJrIjoiMzAzZjEwNTItZGU5YS00NDQ0LTk2YmQtYTZjN2MwZTgzNDI3IiwidCI6IjA3ZGE2N2EwLTFmNDMtNGU4Yy05NzdmLTVmODhiNjQ3MGVlNiIsImMiOjR9" 
+    frameborder="0" 
+    allowFullScreen="true">
+  </iframe>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
-<script>
-  // Serialize server-side data into JS variables (safe defaults)
-  const containersData = {{ containers | default([]) | tojson | safe }};
-  const fillData = {{ chart.fill_data | default([]) | tojson | safe }};
-  const fillLabels = {{ chart.fill_labels | default([]) | tojson | safe }};
-  const tempData = {{ chart.temp_data | default([]) | tojson | safe }};
-  const tempLabels = {{ chart.temp_labels | default([]) | tojson | safe }};
 
-  // Configuración del mapa (Leaflet)
-  const map = L.map('map').setView([4.7, -74.01], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
-    maxZoom: 19
-  }).addTo(map);
-
-  // Agregar marcadores de contenedores desde el array JS
-  const markers = [];
-  if (Array.isArray(containersData) && containersData.length > 0) {
-    containersData.forEach(c => {
-      const lat = parseFloat(c.lat);
-      const lng = parseFloat(c.lng);
-      if (Number.isFinite(lat) && Number.isFinite(lng)) {
-        const popupHtml = `
-          <strong>Contenedor #${c.id}</strong><br>
-          Tipo: ${c.tipo || 'N/A'}<br>
-          Nivel: ${c.nivel_llenado != null ? c.nivel_llenado + '%' : 'N/A'}<br>
-          Estado: ${c.estado || 'Desconocido'}
-        `;
-        const marker = L.marker([lat, lng]).bindPopup(popupHtml);
-        markers.push(marker);
-        marker.addTo(map);
-      }
-    });
-
-    // Ajustar vista a todos los marcadores si existen
-    if (markers.length > 0) {
-      const group = L.featureGroup(markers);
-      map.fitBounds(group.getBounds().pad(0.1));
-    }
-  }
-
-  // Configuración de colores para gráficas
-  const chartColors = {
-    primary: '#0d6efd',
-    success: '#198754',
-    info: '#0dcaf0',
-    warning: '#ffc107',
-    danger: '#dc3545'
-  };
-
-  // Gráfica de llenado por tipo
-  (function(){
-    const ctx1 = document.getElementById('chartFillByType');
-    if (!ctx1) return;
-    new Chart(ctx1.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: Array.isArray(fillLabels) ? fillLabels : [],
-        datasets: [{
-          label: 'Promedio llenado (%)',
-          data: Array.isArray(fillData) ? fillData : [],
-          backgroundColor: chartColors.primary,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true, max: 100 }
-        }
-      }
-    });
-  })();
-
-  // Gráfica de temperatura por hora
-  (function(){
-    const ctx2 = document.getElementById('chartTempByHour');
-    if (!ctx2) return;
-    new Chart(ctx2.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: Array.isArray(tempLabels) ? tempLabels : [],
-        datasets: [{
-          label: 'Temperatura (°C)',
-          data: Array.isArray(tempData) ? tempData : [],
-          borderColor: chartColors.danger,
-          backgroundColor: chartColors.danger + '20',
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: { responsive: true }
-    });
-  })();
-</script>
 {% endblock %}
+
