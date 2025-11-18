@@ -1,43 +1,38 @@
-FROM python:3.10-slim
+# Imagen base
+FROM python:3.13-slim
 
-# Evitar mensajes interactivos
-ENV DEBIAN_FRONTEND=noninteractive
+# Crear directorio de trabajo
+WORKDIR /app
 
-# Instalar dependencias necesarias para ODBC
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    apt-transport-https \
-    unixodbc \
-    unixodbc-dev \
-    build-essential
+# Copiar requerimientos
+COPY requirements.txt .
 
-# Agregar repositorio de Microsoft SIN apt-key (método moderno)
-RUN curl https://packages.microsoft.com/config/debian/12/prod.list \
-    | tee /etc/apt/sources.list.d/mssql-release.list
+# Instalar dependencias de sistema necesarias
+RUN apt-get update && \
+    apt-get install -y curl gnupg unixodbc-dev build-essential
 
-# Importar clave GPG de Microsoft de manera correcta
-RUN curl https://packages.microsoft.com/keys/microsoft.asc \
+# Descargar y registrar la clave GPG de Microsoft
+RUN curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
     | gpg --dearmor \
-    | tee /usr/share/keyrings/microsoft.gpg > /dev/null
+    | tee /usr/share/keyrings/microsoft-prod.gpg > /dev/null
 
-# Instalar driver ODBC 17 y herramientas
+# Agregar repositorio oficial de Microsoft para msodbcsql17
+RUN echo "deb [signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" \
+    | tee /etc/apt/sources.list.d/microsoft-prod.list
+
+# Instalar Microsoft ODBC Driver 17
 RUN apt-get update && \
     ACCEPT_EULA=Y apt-get install -y msodbcsql17 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Crear carpeta
-WORKDIR /app
-
-# Instalar dependencias del proyecto
-COPY requirements.txt .
+# Instalar dependencias Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar código del proyecto
+# Copiar todo el proyecto
 COPY . .
 
-# Puerto para Railway
+# Exponer puerto usado por Railway
 EXPOSE 8080
 
-# Comando de arranque
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+# Comando de inicio
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:crear_app()"]
